@@ -222,144 +222,291 @@ function DeviceStory() {
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(ref);
-      const mobile = window.matchMedia("(max-width: 800px)").matches;
+
+      const isMobile = window.matchMedia("(max-width: 800px)").matches;
+      const isTouch = ScrollTrigger.isTouch === 1;
       const reduced = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
 
-      /*
-       * IMPORTANT:
-       * Explicitly define the starting state.
-       * Only the desktop is visible when the section starts.
-       */
-      gsap.set(q(".desktop-device"), {
-        opacity: 1,
-        scale: mobile ? 0.88 : 1,
-        x: 0,
-        y: 0,
-        rotate: 0,
-        zIndex: 4
-      });
+      const desktop = q(".desktop-device");
+      const laptop = q(".laptop-device");
+      const tablet = q(".tablet-device");
+      const phone = q(".phone-device");
+      const title = q(".stage-title");
 
-      gsap.set(q(".laptop-device"), {
-        opacity: 0,
-        scale: mobile ? 0.76 : 0.8,
-        x: 0,
-        y: 45,
-        rotate: 0,
-        zIndex: 3
-      });
+      if (isMobile || isTouch) {
+        if (typeof ScrollTrigger.normalizeScroll === "function") {
+          ScrollTrigger.normalizeScroll(true);
+        }
 
-      gsap.set(q(".tablet-device"), {
-        opacity: 0,
-        scale: mobile ? 0.76 : 0.8,
-        x: 0,
-        y: 45,
-        rotate: 0,
-        zIndex: 2
-      });
-
-      gsap.set(q(".phone-device"), {
-        opacity: 0,
-        scale: mobile ? 0.76 : 0.8,
-        x: 0,
-        y: 45,
-        rotate: 0,
-        zIndex: 1
-      });
-
-      if (reduced) {
-        /*
-         * If the user prefers reduced motion, show the
-         * devices in a readable stacked state instead of
-         * running the scroll animation.
-         */
-        gsap.set(q(".desktop-device"), {
+        gsap.set(title, {
           opacity: 1,
-          scale: mobile ? 0.88 : 1,
+          y: 0
+        });
+
+        gsap.set(desktop, {
+          opacity: 1,
+          scale: 0.88,
           x: 0,
           y: 0,
           rotate: 0,
           zIndex: 4
         });
 
-        gsap.set(q(".laptop-device"), {
-          opacity: 0.25,
-          scale: mobile ? 0.76 : 0.8,
-          x: mobile ? -55 : -120,
-          y: 30,
-          rotate: -4,
+        gsap.set(laptop, {
+          opacity: 0,
+          scale: 0.76,
+          x: 0,
+          y: 45,
+          rotate: 0,
           zIndex: 3
         });
 
-        gsap.set(q(".tablet-device"), {
-          opacity: 0.18,
-          scale: mobile ? 0.72 : 0.78,
-          x: mobile ? 55 : 120,
+        gsap.set(tablet, {
+          opacity: 0,
+          scale: 0.76,
+          x: 0,
           y: 45,
-          rotate: 4,
+          rotate: 0,
           zIndex: 2
         });
 
-        gsap.set(q(".phone-device"), {
-          opacity: 0.12,
-          scale: mobile ? 0.68 : 0.74,
+        gsap.set(phone, {
+          opacity: 0,
+          scale: 0.76,
           x: 0,
-          y: 55,
+          y: 45,
           rotate: 0,
           zIndex: 1
         });
 
-        return;
+        if (reduced) {
+          return;
+        }
+
+        const mobileTimeline = gsap.timeline({
+          defaults: {
+            ease: "none"
+          },
+          scrollTrigger: {
+            trigger: q(".device-stage"),
+            start: "top top",
+            end: "+=3600",
+            scrub: 0.35,
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: false,
+            fastScrollEnd: false,
+            preventOverlaps: true
+          }
+        });
+
+        // Title
+        mobileTimeline.to(title, {
+          opacity: 0,
+          y: -50,
+          duration: 0.35
+        });
+
+        // DESKTOP -> LAPTOP
+        mobileTimeline.to(desktop, {
+          scale: 0.72,
+          y: 20,
+          opacity: 0.25,
+          duration: 0.7
+        });
+
+        mobileTimeline.to(
+          laptop,
+          {
+            opacity: 1,
+            scale: 1,
+            x: 0,
+            y: 0,
+            rotate: 0,
+            zIndex: 5,
+            duration: 0.7
+          },
+          "<0.15"
+        );
+
+        mobileTimeline.to(laptop, {
+          duration: 0.35
+        });
+
+        mobileTimeline.to(desktop, {
+          x: -110,
+          rotate: -5,
+          opacity: 0,
+          duration: 0.4
+        });
+
+        // LAPTOP -> TABLET
+        mobileTimeline.to(laptop, {
+          scale: 0.72,
+          y: 20,
+          opacity: 0.25,
+          duration: 0.7
+        });
+
+        mobileTimeline.to(
+          tablet,
+          {
+            opacity: 1,
+            scale: 1,
+            x: 0,
+            y: 0,
+            rotate: 0,
+            zIndex: 5,
+            duration: 0.7
+          },
+          "<0.15"
+        );
+
+        mobileTimeline.to(tablet, {
+          duration: 0.35
+        });
+
+        mobileTimeline.to(laptop, {
+          x: 110,
+          rotate: 5,
+          opacity: 0,
+          duration: 0.4
+        });
+
+        // TABLET -> PHONE
+        mobileTimeline.to(tablet, {
+          scale: 0.70,
+          y: 20,
+          opacity: 0.25,
+          duration: 0.7
+        });
+
+        mobileTimeline.to(
+          phone,
+          {
+            opacity: 1,
+            scale: 1,
+            x: 0,
+            y: 0,
+            rotate: 0,
+            zIndex: 6,
+            duration: 0.75
+          },
+          "<0.15"
+        );
+
+        mobileTimeline.to(phone, {
+          duration: 0.5
+        });
+
+        mobileTimeline.to(tablet, {
+          x: -110,
+          rotate: -7,
+          opacity: 0,
+          duration: 0.4
+        });
+
+        mobileTimeline.to(phone, {
+          scale: 1.04,
+          duration: 0.35
+        });
+
+        mobileTimeline.to(phone, {
+          scale: 0.98,
+          y: -10,
+          duration: 0.3
+        });
+
+        const refreshMobile = () => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              ScrollTrigger.refresh();
+            });
+          });
+        };
+
+        refreshMobile();
+        window.addEventListener("orientationchange", refreshMobile);
+
+        return () => {
+          window.removeEventListener(
+            "orientationchange",
+            refreshMobile
+          );
+
+          if (typeof ScrollTrigger.normalizeScroll === "function") {
+            ScrollTrigger.normalizeScroll(false);
+          }
+        };
       }
 
-      /*
-       * Mobile needs considerably more scroll distance.
-       * This gives the user enough time to see every device.
-       */
-      const distance = mobile ? 5200 : 4200;
+      // DESKTOP INITIAL STATE
+      gsap.set(desktop, {
+        opacity: 1,
+        scale: 1,
+        x: 0,
+        y: 0,
+        rotate: 0,
+        zIndex: 4
+      });
 
-      /*
-       * Keep the horizontal exit movement smaller on phones.
-       */
-      const sideMove = mobile ? 105 : 300;
+      gsap.set(laptop, {
+        opacity: 0,
+        scale: 0.8,
+        x: 0,
+        y: 45,
+        rotate: 0,
+        zIndex: 3
+      });
 
-      const tl = gsap.timeline({
+      gsap.set(tablet, {
+        opacity: 0,
+        scale: 0.8,
+        x: 0,
+        y: 45,
+        rotate: 0,
+        zIndex: 2
+      });
+
+      gsap.set(phone, {
+        opacity: 0,
+        scale: 0.8,
+        x: 0,
+        y: 45,
+        rotate: 0,
+        zIndex: 1
+      });
+
+      const desktopTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: q(".device-stage"),
           start: "top top",
-          end: `+=${distance}`,
-          scrub: mobile ? 1 : 1,
+          end: "+=4200",
+          scrub: 1,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true
         }
       });
 
-      /*
-       * TITLE
-       */
-      tl.to(q(".stage-title"), {
+      desktopTimeline.to(title, {
         opacity: 0,
         y: -70,
-        duration: mobile ? 0.55 : 0.35
+        duration: 0.35
       });
 
-      /*
-       * =============================================
-       * DESKTOP -> LAPTOP
-       * =============================================
-       */
-
-      tl.to(q(".desktop-device"), {
-        scale: mobile ? 0.72 : 0.72,
-        y: mobile ? 25 : 40,
-        opacity: mobile ? 0.28 : 0.25,
-        duration: mobile ? 1.2 : 0.8
+      desktopTimeline.to(desktop, {
+        scale: 0.72,
+        y: 40,
+        opacity: 0.25,
+        duration: 0.8
       });
 
-      tl.to(
-        q(".laptop-device"),
+      desktopTimeline.to(
+        laptop,
         {
           opacity: 1,
           scale: 1,
@@ -367,44 +514,31 @@ function DeviceStory() {
           y: 0,
           rotate: 0,
           zIndex: 5,
-          duration: mobile ? 1.25 : 0.8
+          duration: 0.8
         },
         "<0.2"
       );
 
-      /*
-       * HOLD LAPTOP
-       * This creates a clear pause on mobile.
-       */
-      tl.to(q(".laptop-device"), {
-        duration: mobile ? 0.7 : 0.35
+      desktopTimeline.to(laptop, {
+        duration: 0.35
       });
 
-      /*
-       * Desktop exits.
-       */
-      tl.to(q(".desktop-device"), {
-        x: -sideMove,
-        rotate: mobile ? -5 : -8,
+      desktopTimeline.to(desktop, {
+        x: -300,
+        rotate: -8,
         opacity: 0,
-        duration: mobile ? 0.8 : 0.7
+        duration: 0.7
       });
 
-      /*
-       * =============================================
-       * LAPTOP -> TABLET
-       * =============================================
-       */
-
-      tl.to(q(".laptop-device"), {
-        scale: mobile ? 0.72 : 0.72,
+      desktopTimeline.to(laptop, {
+        scale: 0.72,
         y: 25,
-        opacity: mobile ? 0.28 : 0.25,
-        duration: mobile ? 1.1 : 0.7
+        opacity: 0.25,
+        duration: 0.7
       });
 
-      tl.to(
-        q(".tablet-device"),
+      desktopTimeline.to(
+        tablet,
         {
           opacity: 1,
           scale: 1,
@@ -412,43 +546,31 @@ function DeviceStory() {
           y: 0,
           rotate: 0,
           zIndex: 5,
-          duration: mobile ? 1.25 : 0.8
+          duration: 0.8
         },
         "<0.2"
       );
 
-      /*
-       * HOLD TABLET
-       */
-      tl.to(q(".tablet-device"), {
-        duration: mobile ? 0.7 : 0.35
+      desktopTimeline.to(tablet, {
+        duration: 0.35
       });
 
-      /*
-       * Laptop exits.
-       */
-      tl.to(q(".laptop-device"), {
-        x: sideMove,
-        rotate: mobile ? 5 : 7,
+      desktopTimeline.to(laptop, {
+        x: 300,
+        rotate: 7,
         opacity: 0,
-        duration: mobile ? 0.8 : 0.7
+        duration: 0.7
       });
 
-      /*
-       * =============================================
-       * TABLET -> PHONE
-       * =============================================
-       */
-
-      tl.to(q(".tablet-device"), {
-        scale: mobile ? 0.70 : 0.70,
+      desktopTimeline.to(tablet, {
+        scale: 0.70,
         y: 25,
-        opacity: mobile ? 0.25 : 0.2,
-        duration: mobile ? 1.1 : 0.7
+        opacity: 0.2,
+        duration: 0.7
       });
 
-      tl.to(
-        q(".phone-device"),
+      desktopTimeline.to(
+        phone,
         {
           opacity: 1,
           scale: 1,
@@ -456,46 +578,33 @@ function DeviceStory() {
           y: 0,
           rotate: 0,
           zIndex: 6,
-          duration: mobile ? 1.35 : 0.8
+          duration: 0.8
         },
         "<0.2"
       );
 
-      /*
-       * HOLD PHONE
-       */
-      tl.to(q(".phone-device"), {
-        duration: mobile ? 0.9 : 0.4
+      desktopTimeline.to(phone, {
+        duration: 0.4
       });
 
-      /*
-       * Tablet exits.
-       */
-      tl.to(q(".tablet-device"), {
-        x: -sideMove,
-        rotate: mobile ? -7 : -10,
+      desktopTimeline.to(tablet, {
+        x: -300,
+        rotate: -10,
         opacity: 0,
-        duration: mobile ? 0.8 : 0.7
+        duration: 0.7
       });
 
-      /*
-       * Final phone emphasis.
-       */
-      tl.to(q(".phone-device"), {
-        scale: mobile ? 1.04 : 1.06,
-        duration: mobile ? 0.8 : 0.7
+      desktopTimeline.to(phone, {
+        scale: 1.06,
+        duration: 0.7
       });
 
-      tl.to(q(".phone-device"), {
-        scale: mobile ? 0.96 : 0.9,
-        y: mobile ? -15 : -30,
-        duration: mobile ? 0.65 : 0.6
+      desktopTimeline.to(phone, {
+        scale: 0.9,
+        y: -30,
+        duration: 0.6
       });
 
-      /*
-       * Mobile browsers can change viewport height when
-       * their address bar appears/disappears.
-       */
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
