@@ -1,4 +1,4 @@
-  @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
 
 :root {
   --bg: #0b0b0b;
@@ -749,7 +749,8 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
 }
 
 /* =========================================================
-   FINAL MOBILE FOUR-SCREEN ANIMATION FIX
+   FINAL REAL-PHONE MOBILE FOUR-SCREEN FIX
+   Keep GSAP in control of transform.
 ========================================================= */
 
 @media (max-width: 800px) {
@@ -758,6 +759,7 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
     width: 100%;
     max-width: 100%;
     overflow: hidden;
+    position: relative;
   }
 
   .device-stage {
@@ -767,88 +769,74 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
     height: 100svh;
     min-height: 620px;
     overflow: hidden;
-    display: grid;
-    place-items: center;
+    display: block;
     isolation: isolate;
     touch-action: pan-y;
   }
 
   /*
-   * Keep the device centered without using translateX(-50%).
-   * GSAP owns the transform property, so CSS does not fight
-   * GSAP's transform matrix.
+   * IMPORTANT:
+   * Do not use left:50% + translateX(-50%) here.
+   * GSAP animates transform, so CSS translateX can fight GSAP.
+   *
+   * top:0 / bottom:0 + auto margins centers each device
+   * without consuming the transform property.
    */
   .device-stage .device {
     position: absolute;
     left: 0;
     right: 0;
-    top: 50%;
+    top: 0;
+    bottom: 0;
     width: fit-content;
     height: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 0;
+    margin: auto;
     transform-origin: center center;
     will-change: transform, opacity;
     pointer-events: none;
   }
 
-  /* =========================================
-     DESKTOP
-  ========================================= */
-
+  /* GSAP controls visibility. These are only fallback states. */
   .device-stage .desktop-device {
     z-index: 4;
   }
-
-  .desktop .device-frame {
-    width: 92vw;
-    max-width: 880px;
-  }
-
-  /* =========================================
-     LAPTOP
-  ========================================= */
 
   .device-stage .laptop-device {
     z-index: 3;
   }
 
-  .laptop .device-frame {
-    width: 88vw;
-    max-width: 820px;
-  }
-
-  /* =========================================
-     TABLET
-  ========================================= */
-
   .device-stage .tablet-device {
     z-index: 2;
   }
-
-  .tablet .device-frame {
-    width: 82vw;
-    max-width: 510px;
-    height: min(63dvh, 430px);
-  }
-
-  /* =========================================
-     PHONE
-  ========================================= */
 
   .device-stage .phone-device {
     z-index: 1;
   }
 
-  .phone .device-frame {
+  /* Desktop device */
+  .device-stage .desktop .device-frame {
+    width: 92vw;
+    max-width: 880px;
+  }
+
+  /* Laptop device */
+  .device-stage .laptop .device-frame {
+    width: 88vw;
+    max-width: 820px;
+  }
+
+  /* Tablet device */
+  .device-stage .tablet .device-frame {
+    width: 82vw;
+    max-width: 510px;
+    height: min(63dvh, 430px);
+  }
+
+  /* Phone device */
+  .device-stage .phone .device-frame {
     width: min(58vw, 230px);
     height: min(120vw, 480px);
   }
-
-  /* =========================================
-     PROGRESS
-  ========================================= */
 
   .device-progress {
     z-index: 20;
@@ -889,6 +877,16 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
     width: min(58vw, 230px);
     height: min(120vw, 480px);
   }
+
+  /*
+   * Keep the complete device centered on narrow phones.
+   */
+  .device-stage .device {
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 
@@ -898,19 +896,19 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
 
 @media (max-width: 360px) {
 
-  .desktop .device-frame {
+  .device-stage .desktop .device-frame {
     width: 94vw;
   }
 
-  .laptop .device-frame {
+  .device-stage .laptop .device-frame {
     width: 92vw;
   }
 
-  .tablet .device-frame {
+  .device-stage .tablet .device-frame {
     width: 88vw;
   }
 
-  .phone .device-frame {
+  .device-stage .phone .device-frame {
     width: min(60vw, 215px);
     height: min(125vw, 450px);
   }
