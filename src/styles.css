@@ -693,9 +693,9 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
 .hero-photo {
   position: absolute;
   right: 4%;
-  bottom: 0;
+  bottom: auto;
   width: 34%;
-  height: 88%;
+  height: 68%;
   z-index: 2;
   display: flex;
   align-items: flex-end;
