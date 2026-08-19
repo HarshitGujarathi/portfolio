@@ -92,6 +92,7 @@ nav {
   color: var(--muted);
   max-width: 580px;
   line-height: 1.8;
+  font: .68rem DM Mono, monospace;
 }
 .scroll-hint {
   display: inline-flex;
