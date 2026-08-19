@@ -1,4 +1,252 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+Today 12:20 PM
+
+harshit-device-portfolio-all-devices-fixed(1).zip
+Zip Archive
+i want to add my photo here instead of full code refer above zip file and hsow me where  to mdofiy it 
+
+but the photo   this
+
+can we remocve background using css 
+
+remove hte image backgorund 
+
+Generated image: Confident South Asian Man Portrait
+
+Edit
+
+
+i am imporitng the github repository to the vercel but it is giving me this error
+
+
+
+
+
+
+
+
+Pasted code(3).js
+JavaScript
+here is the current main.jsx file 
+
+Check this 
+
+But on scrolling still the all other devices js not showing as per it show in desktop version 
+
+1000143026.jpg
+17871271381608342381928803802824.jpg
+Still same why it is not working and not looking same in orginal mobile and but when I inspect the page in mobile version it is visible and working fine but not in orginal mobile 
+
+I need one file now:
+
+src/styles.css
+Please upload your current styles.css from the same project.
+
+I already have your current main.jsx, so don't upload main.jsx again. 
+
+
+Once you upload styles.css, I'll check the actual mobile CSS and give you the exact changes needed for:
+
+Desktop → Laptop → Tablet → Phone
+
+to work properly on your real phone, while keeping the desktop version unchanged.
+
+
+
+Pasted text(20260819-081456).txt
+Document
+here it is
+
+Got it. I checked your actual styles.css, and now I can see the main problem. 
+
+
+The exact problem
+This section is causing the real-phone issue:
+
+.device {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+Your GSAP animation also controls transform. Because CSS puts the device at left: 50% but doesn't actually apply translateX(-50%), the entire device starts halfway across the screen.
+
+That's exactly what your real-phone screenshot shows: the desktop is pushed to the right and clipped.
+
+Also, your CSS has multiple overlapping mobile rules for .device-stage, .desktop, .laptop, .tablet, and .phone, which makes the real-device behavior harder to control. 
+
+
+I recommend fixing it properly
+Don't add another random media query at the bottom. Replace the last mobile animation-fix section of your CSS.
+
+Find:
+
+/* =========================================================
+   FINAL MOBILE FOUR-SCREEN ANIMATION FIX
+========================================================= */
+which starts around line 751. 
+
+
+Replace everything from that comment to the end of the file with this:
+/* =========================================================
+   FINAL MOBILE FOUR-SCREEN ANIMATION FIX
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .device-story {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .device-stage {
+    position: relative;
+
+    width: 100%;
+    max-width: 100vw;
+
+    height: 100svh;
+    min-height: 620px;
+
+    overflow: hidden;
+
+    display: grid;
+    place-items: center;
+
+    isolation: isolate;
+
+    touch-action: pan-y;
+  }
+
+  /*
+   * IMPORTANT:
+   *
+   * Do NOT use:
+   *
+But there is one more change I want you to make
+Your main.jsx also needs to initialize the devices correctly.
+
+In DeviceStory(), after:
+
+const sideMove = mobile ? 110 : 300;
+add:
+
+// Initial mobile/desktop device states
+gsap.set(q(".desktop-device"), {
+  opacity: 1,
+  x: 0,
+  y: 0,
+  scale: mobile ? 0.9 : 1,
+  rotate: 0
+});
+
+gsap.set(q(".laptop-device"), {
+  opacity: 0,
+  x: 0,
+  y: 40,
+  scale: mobile ? 0.75 : 0.8,
+  rotate: 0
+});
+
+gsap.set(q(".tablet-device"), {
+  opacity: 0,
+  x: 0,
+  y: 40,
+  scale: mobile ? 0.75 : 0.8,
+  rotate: 0
+});
+
+gsap.set(q(".phone-device"), {
+  opacity: 0,
+  x: 0,
+  y: 40,
+  scale: mobile ? 0.75 : 0.8,
+  rotate: 0
+});
+Why both changes are needed
+Your current CSS says the devices are positioned with:
+
+left: 50%;
+top: 50%;
+while GSAP is simultaneously changing:
+
+transform: scale(...)
+transform: translate(...)
+That's why your physical phone screenshot shows the desktop off to the right.
+
+The new CSS uses:
+
+left: 0;
+right: 0;
+margin-left: auto;
+margin-right: auto;
+so the device remains centered without competing with GSAP's transform.
+
+Then the GSAP initial states ensure:
+
+START
+
+Desktop     100% visible
+Laptop        0% visible
+Tablet        0% visible
+Phone         0% visible
+
+       ↓ scroll
+
+Desktop       → exits
+Laptop       100%
+
+       ↓ scroll
+
+Laptop        → exits
+Tablet       100%
+
+       ↓ scroll
+
+Tablet        → exits
+Phone        100%
+This should also make the real phone match the Chrome mobile inspection much more closely.
+
+Do not change the rest of your CSS. Only replace that final section and add the GSAP initial-state block. Your existing photo and portfolio content stay untouched.
+
+
+give me the full style file
+
+Done. I created the full styles.css file using your existing CSS and replaced only the problematic final mobile device section. Your other styling is preserved. 
+
+
+Download
+Download the complete styles.css
+
+Replace:
+
+src/styles.css
+with this file.
+
+Important
+This fixes the CSS positioning problem, but you should also apply the gsap.set() initial-state change I gave you in main.jsx. Otherwise the phone/tablet/laptop may still appear underneath before their animation starts.
+
+After replacing both files:
+
+npm run build
+If that succeeds:
+
+git add src/main.jsx src/styles.css
+git commit -m "Fix mobile four screen animation"
+git push
+Then deploy the new commit on Vercel and test the actual phone, preferably once in Incognito. 
+
+
+styles.css
+Code
+
+
+Library
+/
+styles.css
+
+
+ @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
 
 :root {
   --bg: #0b0b0b;
@@ -915,3 +1163,5 @@ footer { color: #555; font: .65rem "DM Mono", monospace; margin-top: auto; paddi
     height: min(125vw, 450px);
   }
 }
+
+Mr E
