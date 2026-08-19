@@ -8,167 +8,254 @@ html,
 body {
   width: 100%;
   min-height: 100%;
-  background-color: #0b0b0b;
+  background-color: #0c0c0c;
   color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   overflow-x: hidden;
 }
 
-.page-wrapper {
+.portfolio-root {
   width: 100%;
   position: relative;
 }
 
-.hero-scroll-container {
+.stage {
   width: 100%;
-  min-height: 100dvh;
+  min-height: 100dvh; /* dvh ensures proper height calculation on mobile devices */
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
-.monitor-container {
+.monitor-frame {
   width: 100%;
-  max-width: 900px;
+  max-width: 980px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
   will-change: transform, opacity;
   transform-origin: center center;
+  transition: max-width 0.4s ease;
 }
 
-.monitor-bezel {
+/* Device Width Selectors */
+.monitor-frame.desktop {
+  max-width: 980px;
+}
+.monitor-frame.laptop {
+  max-width: 820px;
+}
+.monitor-frame.tablet {
+  max-width: 640px;
+}
+.monitor-frame.phone {
+  max-width: 400px;
+}
+
+/* Top Bezel Center Camera Dot */
+.monitor-cam-dot {
+  width: 6px;
+  height: 6px;
+  background: #333333;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  z-index: 10;
+}
+
+.display-bezel {
   width: 100%;
-  background: #18181b;
-  border: 2px solid #3f3f46;
-  border-radius: 18px;
+  background: #141414;
+  border: 4px solid #383838;
+  border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+  position: relative;
 }
 
-.screen-inner {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 20px;
-  align-items: center;
-  background: #09090b;
+.screen-content {
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
   border-radius: 12px;
-  padding: 28px;
+  padding: 28px 32px;
 }
 
-.badge-tag {
-  color: #a3e635;
-  font-size: 0.75rem;
-  letter-spacing: 2px;
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
   font-weight: 700;
-  display: inline-block;
-  margin-bottom: 8px;
+  color: #a6e22e;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
 }
 
-.name-title {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
+.header-meta .separator {
+  color: #4a4a4a;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -0.5px;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
-.name-title span {
-  color: #a3e635;
+.accent-name {
+  color: #a6e22e;
 }
 
-.bio-text {
-  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
-  color: #a1a1aa;
-  line-height: 1.5;
-  margin-bottom: 20px;
+.bio {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #8c8c8c;
+  margin-bottom: 28px;
 }
 
-.skill-pills {
+.tech-tags {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
-.pill {
-  border: 1px solid #3f3f46;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font-size: 0.7rem;
+.tag {
+  font-size: 0.65rem;
   font-weight: 600;
-  color: #d4d4d8;
-  background: #18181b;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid #2b2b2b;
+  background: #141414;
+  color: #cccccc;
+  letter-spacing: 0.5px;
 }
 
-.profile-photo-wrapper {
+.media-col {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-card {
   width: 100%;
-  aspect-ratio: 4 / 4.5;
-  border-radius: 12px;
+  max-width: 320px;
+  aspect-ratio: 4 / 4.6;
+  background: #1c1c1c;
+  border-radius: 16px;
   overflow: hidden;
-  background: #27272a;
+  border: 1px solid #222222;
 }
 
-.profile-photo {
+.avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.monitor-neck {
-  width: 70px;
-  height: 40px;
-  background: #27272a;
+/* Stand Neck & Foot */
+.stand-neck {
+  width: 90px;
+  height: 48px;
+  background: #737373;
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
 }
 
-.monitor-base {
-  width: 160px;
+.stand-foot {
+  width: 180px;
   height: 12px;
-  background: #3f3f46;
+  background: #8c8c8c;
   border-radius: 4px;
 }
 
-.next-section {
-  min-height: 100dvh;
+/* Device Navigation */
+.device-nav {
+  position: absolute;
+  bottom: 24px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #121214;
+  gap: 12px;
 }
 
-/* Mobile Adjustments */
-@media (max-width: 767px) {
-  .hero-scroll-container {
-    padding: 0.5rem;
+.nav-item {
+  background: none;
+  border: none;
+  color: #444444;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  color: #ffffff;
+}
+
+.nav-divider {
+  color: #2e2e2e;
+  font-size: 0.7rem;
+}
+
+/* Mobile & Touch Screen Adaptations */
+@media (max-width: 768px) {
+  .stage {
+    padding: 0.75rem;
   }
 
-  .monitor-bezel {
+  .display-bezel {
     padding: 14px;
     border-radius: 14px;
   }
 
-  .screen-inner {
+  .screen-content {
+    padding: 16px 14px;
+  }
+
+  .hero-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 16px;
+    gap: 20px;
   }
 
-  .profile-photo-wrapper {
-    max-width: 200px;
-    margin: 0 auto;
+  .avatar-card {
+    max-width: 190px;
   }
 
-  .monitor-neck {
-    width: 50px;
-    height: 25px;
+  .stand-neck {
+    width: 60px;
+    height: 30px;
   }
 
-  .monitor-base {
-    width: 120px;
-    height: 10px;
+  .stand-foot {
+    width: 130px;
+    height: 9px;
+  }
+
+  .device-nav {
+    bottom: 12px;
+    gap: 8px;
+  }
+
+  .nav-item {
+    font-size: 0.58rem;
   }
 }
